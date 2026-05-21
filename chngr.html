@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Chngr</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;900&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg-base:#0A0A0C;--bg-card:#111115;--bg-card2:#18181E;--bg-surface:#1E1E26;
+    --accent:#C8FF00;--accent-dim:rgba(200,255,0,0.12);--accent-border:rgba(200,255,0,0.28);
+    --text-primary:#F0F0F5;--text-secondary:#7A7A8C;--text-muted:#3A3A4A;
+    --border:rgba(255,255,255,0.06);--border-strong:rgba(255,255,255,0.12);
+    --red:#FF4D6D;--green:#00E5A0;--blue:#3D9EFF;
+    --safe-top:env(safe-area-inset-top,44px);--safe-bottom:env(safe-area-inset-bottom,20px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg-base);color:var(--text-primary);font-family:'Barlow',sans-serif;min-height:100vh;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+  .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+
+  /* STATUS */
+  .status-bar{padding:var(--safe-top) 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--text-secondary);letter-spacing:.05em}
+
+  /* HEADER */
+  .header{padding:16px 24px 12px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;letter-spacing:-.03em;color:var(--text-primary);line-height:1}
+  .logo span{color:var(--accent)}
+  .header-actions{display:flex;gap:8px;align-items:center}
+  .icon-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-card2);border:.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;position:relative}
+  .icon-btn:active{background:var(--bg-surface)}
+  .icon-btn svg{width:18px;height:18px;stroke:var(--text-secondary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+  /* SYNC BADGE */
+  .sync-badge{position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--bg-base)}
+  .sync-badge.syncing{background:var(--accent);animation:pulse 1s infinite}
+  .sync-badge.error{background:var(--red)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* SYNC STATUS BAR */
+  .sync-bar{margin:0 20px 12px;background:var(--bg-card2);border:.5px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);flex-shrink:0;transition:background .3s}
+  .sync-dot.live{background:var(--green);animation:pulse 2s infinite}
+  .sync-dot.syncing{background:var(--accent);animation:pulse .7s infinite}
+  .sync-dot.error{background:var(--red)}
+  .sync-text{font-size:12px;color:var(--text-secondary);flex:1}
+  .sync-text strong{color:var(--text-primary);font-weight:600}
+  .sync-manual{font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;padding:4px 8px;border-radius:6px;background:var(--accent-dim);border:.5px solid var(--accent-border)}
+  .sync-manual:active{opacity:.7}
+
+  /* NAV TABS */
+  .nav-tabs{padding:0 24px 8px;display:flex;gap:4px}
+  .nav-tab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:all .18s;border:none;background:transparent;color:var(--text-muted)}
+  .nav-tab.active{background:var(--accent-dim);color:var(--accent);border:.5px solid var(--accent-border)}
+
+  /* CONTENT */
+  .content{flex:1;overflow-y:auto;padding:0 0 calc(80px + var(--safe-bottom));-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .content::-webkit-scrollbar{display:none}
+
+  /* SECTION */
+  .section{padding:0 20px;margin-bottom:20px}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding:0 4px}
+
+  /* SETUP BANNER */
+  .setup-banner{margin:0 20px 20px;background:var(--bg-card2);border:.5px solid var(--accent-border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+  .setup-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+  .setup-banner:active{transform:scale(.98)}
+  .setup-row{display:flex;align-items:center;gap:14px}
+  .setup-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-dim);border:.5px solid var(--accent-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .setup-icon svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .setup-title{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:2px}
+  .setup-sub{font-size:12px;color:var(--text-secondary);line-height:1.4}
+  .steps-list{margin-top:14px;display:none;flex-direction:column;gap:8px}
+  .steps-list.open{display:flex}
+  .step-item{display:flex;gap:10px;align-items:flex-start}
+  .step-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0A0A0C;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .step-text{font-size:12px;color:var(--text-secondary);line-height:1.5}
+  .step-text code{color:var(--accent);background:rgba(200,255,0,.1);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px}
+  .step-text strong{color:var(--text-primary);font-weight:600}
+  .webhook-box{margin-top:12px;background:var(--bg-surface);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;border:.5px solid var(--border-strong)}
+  .webhook-url{font-family:monospace;font-size:10px;color:var(--accent);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .copy-btn{font-size:11px;font-weight:700;color:var(--text-secondary);cursor:pointer;padding:4px 8px;background:var(--bg-card);border-radius:6px;border:.5px solid var(--border-strong);white-space:nowrap}
+  .copy-btn:active{opacity:.7}
+
+  /* STATS */
+  .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .stat-card{background:var(--bg-card);border:.5px solid var(--border);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+  .stat-card.accent-card{background:var(--accent-dim);border-color:var(--accent-border)}
+  .stat-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px}
+  .stat-value{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--text-primary);line-height:1;letter-spacing:-.02em}
+  .stat-value .unit{font-size:16px;font-weight:400;color:var(--text-secondary);margin-left:2px}
+  .stat-value.accent-val{color:var(--accent)}
+  .stat-delta{margin-top:6px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+  .stat-delta.positive{color:var(--red)}
+  .stat-delta.negative{color:var(--green)}
+  .stat-delta.neutral{color:var(--text-secondary)}
+  .stat-date{margin-top:4px;font-size:11px;color:var(--text-muted)}
+
+  /* CHART */
+  .chart-card{background:var(--bg-card);border:.5px solid var(--border);border-radius:20px;padding:20px;margin-bottom:10px}
+  .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .chart-title{font-size:14px;font-weight:700;color:var(--text-primary)}
+  .chart-subtitle{font-size:11px;color:var(--text-secondary);margin-top:2px}
+  .filter-pills{display:flex;background:var(--bg-surface);border-radius:10px;padding:3px;gap:2px}
+  .filter-pill{padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer;background:none;border:none;color:var(--text-secondary);transition:all .15s}
+  .filter-pill.active{background:var(--accent);color:#0A0A0C}
+  .chart-wrap{position:relative;width:100%;height:180px}
+  .legend-row{display:flex;gap:16px;margin-top:14px}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)}
+  .legend-dot{width:8px;height:8px;border-radius:2px}
+
+  /* HISTORY */
+  .history-card{background:var(--bg-card);border:.5px solid var(--border);border-radius:20px;overflow:hidden}
+  .history-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid var(--border)}
+  .history-title{font-size:14px;font-weight:700;color:var(--text-primary)}
+  .history-count{font-size:12px;color:var(--text-secondary)}
+  .history-item{display:flex;align-items:center;padding:14px 20px;border-bottom:.5px solid var(--border);transition:background .1s}
+  .history-item:last-child{border-bottom:none}
+  .history-item:active{background:var(--bg-card2)}
+  .history-day{min-width:36px;text-align:center}
+  .day-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text-primary);line-height:1}
+  .day-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:1px}
+  .history-bar-wrap{flex:1;margin:0 14px}
+  .history-bar-bg{height:4px;background:var(--bg-surface);border-radius:2px;overflow:hidden}
+  .history-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .4s ease}
+  .history-right{text-align:right;min-width:64px}
+  .history-weight{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--text-primary);line-height:1}
+  .history-unit{font-size:11px;color:var(--text-muted);margin-left:1px}
+  .history-delta{font-size:11px;font-weight:600;margin-top:2px}
+  .history-delta.up{color:var(--red)}
+  .history-delta.down{color:var(--green)}
+  .history-delta.eq{color:var(--text-muted)}
+
+  /* NEW ENTRY FLASH */
+  @keyframes flashEntry{0%{background:rgba(200,255,0,.18)}100%{background:transparent}}
+  .history-item.new-flash{animation:flashEntry 2s ease-out}
+
+  /* MODAL */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal-backdrop.open{opacity:1;pointer-events:all}
+  .modal-sheet{width:100%;max-width:430px;margin:0 auto;background:var(--bg-card2);border-radius:24px 24px 0 0;padding:12px 24px calc(32px + var(--safe-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);border:.5px solid var(--border-strong);border-bottom:none}
+  .modal-backdrop.open .modal-sheet{transform:translateY(0)}
+  .modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 20px}
+  .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--text-primary);margin-bottom:20px;letter-spacing:-.01em}
+  .weight-input-wrap{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:24px 0 28px;background:var(--bg-surface);border-radius:16px;padding:20px;border:.5px solid var(--border-strong)}
+  #weightInput{background:none;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:700;color:var(--accent);text-align:center;width:160px;letter-spacing:-.02em;caret-color:var(--accent)}
+  .weight-unit{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:400;color:var(--text-secondary)}
+  .modal-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .modal-date-label{font-size:13px;font-weight:600;color:var(--text-secondary)}
+  #dateInput{background:var(--bg-surface);border:.5px solid var(--border-strong);border-radius:10px;padding:8px 12px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:var(--text-primary);outline:none;color-scheme:dark}
+  .btn-save{width:100%;padding:16px;background:var(--accent);border:none;border-radius:14px;font-family:'Barlow',sans-serif;font-size:16px;font-weight:700;color:#0A0A0C;letter-spacing:.02em;cursor:pointer;transition:all .15s}
+  .btn-save:active{transform:scale(.97);opacity:.9}
+  .btn-secondary{background:var(--bg-surface);color:var(--accent);border:.5px solid var(--accent-border)}
+
+  /* BOTTOM NAV */
+  .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(10,10,12,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:.5px solid var(--border);padding:10px 0 var(--safe-bottom);display:flex;justify-content:space-around;align-items:center;z-index:50}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0}
+  .nav-item svg{width:22px;height:22px;fill:none;stroke:var(--text-muted);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:stroke .15s}
+  .nav-item.active svg{stroke:var(--accent)}
+  .nav-item-label{font-size:10px;font-weight:600;letter-spacing:.05em;color:var(--text-muted);transition:color .15s}
+  .nav-item.active .nav-item-label{color:var(--accent)}
+  .fab{width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(200,255,0,.3);margin-top:-22px}
+  .fab:active{transform:scale(.92)}
+  .fab svg{width:22px;height:22px;stroke:#0A0A0C;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+  /* TOAST */
+  .toast{position:fixed;top:calc(var(--safe-top) + 60px);left:50%;transform:translateX(-50%) translateY(-12px);background:var(--bg-surface);border:.5px solid var(--accent-border);color:var(--accent);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:200;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* EMPTY */
+  .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
+  .empty-state svg{width:48px;height:48px;stroke:var(--text-muted);fill:none;stroke-width:1.5;margin-bottom:12px}
+  .empty-state p{font-size:14px}
+
+  /* LIVE INDICATOR */
+  .live-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,160,.1);border:.5px solid rgba(0,229,160,.3);border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700;color:var(--green);letter-spacing:.06em}
+  .live-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+  #fileInput{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="status-bar">
+    <span id="currentTime">9:41</span>
+    <span style="display:flex;gap:6px;align-items:center;">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="var(--text-secondary)"><rect x="0" y="3" width="3" height="7" rx="1"/><rect x="4.5" y="2" width="3" height="8" rx="1"/><rect x="9" y="0" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="2" height="10" rx="1" opacity="0.3"/></svg>
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"><rect x="1" y="2" width="12" height="7" rx="2"/><path d="M13 4.5h1.5a1 1 0 010 2H13" stroke-linecap="round"/><rect x="2.5" y="3.5" width="7" height="4" rx="1" fill="var(--text-secondary)"/></svg>
+    </span>
+  </div>
+
+  <div class="header">
+    <div class="logo">CH<span>N</span>GR</div>
+    <div class="header-actions">
+      <div class="icon-btn" onclick="manualSync()" title="Synchroniser">
+        <svg viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="sync-badge" id="syncBadge"></div>
+      </div>
+      <div class="icon-btn" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active">Pesées</button>
+    <button class="nav-tab">Mensurations</button>
+    <button class="nav-tab">Nutrition</button>
+  </div>
+
+  <!-- SYNC STATUS BAR -->
+  <div class="sync-bar">
+    <div class="sync-dot" id="syncDot"></div>
+    <div class="sync-text" id="syncText"><strong>Non configuré</strong> — sync Apple Santé</div>
+    <div class="sync-manual" onclick="manualSync()">Sync</div>
+  </div>
+
+  <div class="content">
+
+    <!-- SETUP BANNER -->
+    <div class="setup-banner" onclick="toggleSetup()">
+      <div class="setup-row">
+        <div class="setup-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="setup-title">Connecter Apple Santé</div>
+          <div class="setup-sub">Sync automatique à chaque pesée iPhone</div>
+        </div>
+        <svg id="setupArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" style="transition:transform .2s"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+
+      <div class="steps-list" id="setupSteps">
+        <div style="height:1px;background:var(--border);margin:4px 0 8px"></div>
+
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Copiez votre <strong>URL webhook</strong> personnelle ci-dessous</div>
+        </div>
+        <div class="webhook-box">
+          <div class="webhook-url" id="webhookUrl">—</div>
+          <div class="copy-btn" onclick="copyWebhook(event)">Copier</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text">Créez un compte gratuit sur <code>make.com</code> ou <code>n8n.io</code><br>et créez un scénario <strong>Webhook → HTTP</strong> vers cette URL</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text">Sur iPhone : <strong>Raccourcis</strong> → <strong>Automatisation</strong> → <strong>Santé</strong> → Poids corporel → envoyez <code>{"date":"…","poids":…}</code> au webhook Make/n8n</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Ou importez directement un fichier <strong>export.xml Apple Santé</strong> ou <strong>CSV</strong></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-save btn-secondary" style="padding:10px;font-size:13px" onclick="document.getElementById('fileInput').click();event.stopPropagation()">Importer XML/CSV</button>
+          <button class="btn-save" style="padding:10px;font-size:13px" onclick="loadDemoData();event.stopPropagation()">Données démo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="section">
+      <div class="stats-row">
+        <div class="stat-card accent-card">
+          <div class="stat-label">Aujourd'hui</div>
+          <div class="stat-value accent-val" id="statToday">—<span class="unit">kg</span></div>
+          <div class="stat-date" id="statTodayDate">Aucune pesée</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Moy. semaine</div>
+          <div class="stat-value" id="statWeekAvg">—<span class="unit">kg</span></div>
+          <div class="stat-delta neutral" id="statWeekDelta">— vs sem. préc.</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Min. 30 jours</div>
+          <div class="stat-value" id="statMin">—<span class="unit">kg</span></div>
+          <div class="stat-date" id="statMinDate"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Max. 30 jours</div>
+          <div class="stat-value" id="statMax">—<span class="unit">kg</span></div>
+          <div class="stat-date" id="statMaxDate"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="section">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Évolution du poids</div>
+            <div class="chart-subtitle" id="chartSubtitle">Chargement…</div>
+          </div>
+          <div class="filter-pills">
+            <button class="filter-pill" onclick="setFilter('3d')">3J</button>
+            <button class="filter-pill active" onclick="setFilter('1w')">1S</button>
+            <button class="filter-pill" onclick="setFilter('1m')">1M</button>
+            <button class="filter-pill" onclick="setFilter('1y')">1A</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="weightChart" role="img" aria-label="Graphique d'évolution du poids au cours du temps">Évolution du poids</canvas>
+        </div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#C8FF00"></div>Poids réel</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(200,255,0,.35);border:1px dashed #C8FF00"></div>Tendance</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="section">
+      <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Historique</span>
+        <span class="live-chip" id="liveChip" style="display:none">LIVE</span>
+      </div>
+      <div class="history-card" id="historyList">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <p>Aucune pesée enregistrée.<br>Appuyez sur <strong style="color:var(--accent)">+</strong> pour commencer.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ADD MODAL -->
+<div class="modal-backdrop" id="addModal" onclick="closeAddModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Ajouter une pesée</div>
+    <div class="weight-input-wrap">
+      <input type="number" id="weightInput" placeholder="75.0" step="0.1" min="30" max="300">
+      <span class="weight-unit">kg</span>
+    </div>
+    <div class="modal-date-row">
+      <span class="modal-date-label">Date</span>
+      <input type="date" id="dateInput">
+    </div>
+    <button class="btn-save" onclick="saveWeight()">Enregistrer</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    <span class="nav-item-label">Pesées</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+    <span class="nav-item-label">Tendances</span>
+  </div>
+  <div class="nav-item" style="flex:0">
+    <button class="fab" onclick="openAddModal()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span class="nav-item-label">Objectifs</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg>
+    <span class="nav-item-label">Profil</span>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".xml,.csv" onchange="handleFileImport(event)">
+
+<script>
+// ── CONFIG ────────────────────────────────────────────
+// Génère un ID unique par navigateur (simule un "compte" utilisateur)
+const USER_ID = localStorage.getItem('chngr_uid') || (() => {
+  const id = 'usr_' + Math.random().toString(36).substr(2,9);
+  localStorage.setItem('chngr_uid', id);
+  return id;
+})();
+
+// ── SYNC CONFIG ───────────────────────────────────────
+// Pour une vraie intégration, remplacez WEBHOOK_ENDPOINT par votre URL Make/n8n
+// et POLLING_URL par l'endpoint qui retourne le dernier JSON de pesées.
+// En mode démo, on simule le polling avec localStorage.
+const POLLING_INTERVAL = 30000; // 30 secondes
+let pollingTimer = null;
+let lastPollHash = '';
+let isConfigured = false; // passe à true si un webhook est renseigné
+
+// URL webhook simulée (à remplacer par Make.com ou n8n)
+const DEMO_WEBHOOK = `https://hook.make.com/chngr_${USER_ID}`;
+document.getElementById('webhookUrl').textContent = DEMO_WEBHOOK;
+
+// ── DATA STORE ────────────────────────────────────────
+let weightData = JSON.parse(localStorage.getItem('chngr_weights') || '[]');
+let chart = null;
+let currentFilter = '1w';
+let lastKnownCount = weightData.length;
+
+function saveData() {
+  localStorage.setItem('chngr_weights', JSON.stringify(weightData));
+}
+
+// ── POLLING ENGINE ────────────────────────────────────
+// En production, cette fonction ferait un fetch() vers votre backend.
+// Ici elle surveille localStorage pour détecter des ajouts externes
+// (ex: depuis un autre onglet, ou via un Service Worker).
+function startPolling() {
+  stopPolling();
+  setSyncState('live');
+  pollingTimer = setInterval(async () => {
+    await pollForNewData();
+  }, POLLING_INTERVAL);
+  // Premier poll immédiat
+  pollForNewData();
+}
+
+function stopPolling() {
+  if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
+}
+
+async function pollForNewData() {
+  setSyncState('syncing');
+  try {
+    // Simule un délai réseau
+    await new Promise(r => setTimeout(r, 400));
+
+    // Relit localStorage (simule un backend)
+    const fresh = JSON.parse(localStorage.getItem('chngr_weights') || '[]');
+    const freshHash = JSON.stringify(fresh);
+
+    if (freshHash !== lastPollHash) {
+      const prevCount = weightData.length;
+      weightData = fresh;
+      lastPollHash = freshHash;
+      refresh();
+
+      if (fresh.length > prevCount) {
+        const newest = [...fresh].sort((a,b) => b.date.localeCompare(a.date))[0];
+        showToast(`Nouvelle pesée : ${newest.weight.toFixed(1)} kg`);
+        highlightNewest();
+        setSyncState('live');
+        updateSyncBar(`Dernière sync : ${timeNow()} · <strong>${fresh.length} pesées</strong>`);
+        return;
+      }
+    }
+    setSyncState('live');
+    updateSyncBar(`Sync active · Prochaine dans <strong>30 s</strong>`);
+  } catch(e) {
+    setSyncState('error');
+    updateSyncBar('Erreur de synchronisation');
+  }
+}
+
+async function manualSync() {
+  showToast('Synchronisation…');
+  await pollForNewData();
+}
+
+function setSyncState(state) {
+  const dot = document.getElementById('syncDot');
+  const badge = document.getElementById('syncBadge');
+  dot.className = 'sync-dot ' + state;
+  badge.className = 'sync-badge ' + (state === 'syncing' ? 'syncing' : state === 'error' ? 'error' : '');
+}
+
+function updateSyncBar(html) {
+  document.getElementById('syncText').innerHTML = html;
+}
+
+function highlightNewest() {
+  const items = document.querySelectorAll('.history-item');
+  if (items.length) {
+    items[0].classList.remove('new-flash');
+    void items[0].offsetWidth;
+    items[0].classList.add('new-flash');
+  }
+}
+
+// ── WEBHOOK RECEIVER (Service Worker simulé) ─────────
+// Dans une vraie app, un Service Worker intercepterait les
+// notifications push ou les résultats webhook ici.
+// On écoute storage pour détecter des ajouts depuis d'autres onglets.
+window.addEventListener('storage', (e) => {
+  if (e.key === 'chngr_weights' && e.newValue) {
+    weightData = JSON.parse(e.newValue);
+    lastPollHash = e.newValue;
+    refresh();
+    const sorted = [...weightData].sort((a,b) => b.date.localeCompare(a.date));
+    if (sorted.length) showToast(`Sync : ${sorted[0].weight.toFixed(1)} kg`);
+    highlightNewest();
+    setSyncState('live');
+    updateSyncBar(`Sync temps réel · <strong>${weightData.length} pesées</strong>`);
+  }
+});
+
+// ── UTILS ─────────────────────────────────────────────
+function timeNow() {
+  const n = new Date();
+  return `${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}`;
+}
+function parseDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function formatDate(s) {
+  const d=parseDate(s);
+  const days=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+function todayStr() {
+  const n=new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── REGRESSION LINÉAIRE ────────────────────────────────
+function linearRegression(data) {
+  const n=data.length; if(n<2) return data.map(d=>d.y);
+  let sx=0,sy=0,sxy=0,sxx=0;
+  data.forEach((d,i)=>{sx+=i;sy+=d.y;sxy+=i*d.y;sxx+=i*i});
+  const slope=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+  const intercept=(sy-slope*sx)/n;
+  return data.map((_,i)=>parseFloat((slope*i+intercept).toFixed(2)));
+}
+
+// ── FILTER ────────────────────────────────────────────
+function getFilteredData(filter) {
+  const sorted=[...weightData].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!sorted.length) return [];
+  const now=new Date(); let cutoff;
+  if(filter==='3d'){cutoff=new Date(now);cutoff.setDate(now.getDate()-3)}
+  else if(filter==='1w'){cutoff=new Date(now);cutoff.setDate(now.getDate()-7)}
+  else if(filter==='1m'){cutoff=new Date(now);cutoff.setMonth(now.getMonth()-1)}
+  else{cutoff=new Date(now);cutoff.setFullYear(now.getFullYear()-1)}
+  return sorted.filter(d=>parseDate(d.date)>=cutoff);
+}
+
+// ── STATS ─────────────────────────────────────────────
+function computeStats() {
+  const sorted=[...weightData].sort((a,b)=>b.date.localeCompare(a.date));
+  const today=todayStr();
+  const todayEntry=sorted.find(d=>d.date===today);
+  if(todayEntry){
+    document.getElementById('statToday').innerHTML=`${todayEntry.weight.toFixed(1)}<span class="unit">kg</span>`;
+    document.getElementById('statTodayDate').textContent='Pesée du jour ✓';
+  } else {
+    document.getElementById('statToday').innerHTML=`—<span class="unit">kg</span>`;
+    document.getElementById('statTodayDate').textContent='Aucune pesée';
+  }
+  const now=new Date();
+  const weekStart=new Date(now); weekStart.setDate(now.getDate()-7);
+  const prevWeekStart=new Date(now); prevWeekStart.setDate(now.getDate()-14);
+  const thisWeek=weightData.filter(d=>parseDate(d.date)>=weekStart);
+  const prevWeek=weightData.filter(d=>parseDate(d.date)>=prevWeekStart&&parseDate(d.date)<weekStart);
+  if(thisWeek.length){
+    const avg=thisWeek.reduce((s,d)=>s+d.weight,0)/thisWeek.length;
+    document.getElementById('statWeekAvg').innerHTML=`${avg.toFixed(1)}<span class="unit">kg</span>`;
+    if(prevWeek.length){
+      const prevAvg=prevWeek.reduce((s,d)=>s+d.weight,0)/prevWeek.length;
+      const delta=avg-prevAvg;
+      const el=document.getElementById('statWeekDelta');
+      el.textContent=`${delta>0?'+':''}${delta.toFixed(1)}kg vs sem. préc.`;
+      el.className=`stat-delta ${delta>0?'positive':delta<0?'negative':'neutral'}`;
+    }
+  }
+  const last30=new Date(now); last30.setDate(now.getDate()-30);
+  const recent=weightData.filter(d=>parseDate(d.date)>=last30);
+  if(recent.length){
+    const minE=recent.reduce((a,b)=>a.weight<b.weight?a:b);
+    const maxE=recent.reduce((a,b)=>a.weight>b.weight?a:b);
+    document.getElementById('statMin').innerHTML=`${minE.weight.toFixed(1)}<span class="unit">kg</span>`;
+    document.getElementById('statMinDate').textContent=formatDate(minE.date);
+    document.getElementById('statMax').innerHTML=`${maxE.weight.toFixed(1)}<span class="unit">kg</span>`;
+    document.getElementById('statMaxDate').textContent=formatDate(maxE.date);
+  }
+}
+
+// ── CHART ─────────────────────────────────────────────
+function buildChart(filter) {
+  const data=getFilteredData(filter);
+  const ctx=document.getElementById('weightChart').getContext('2d');
+  const labels=data.map(d=>{
+    const dt=parseDate(d.date);
+    if(filter==='1y') return dt.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'});
+    if(filter==='1m') return dt.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    return dt.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'});
+  });
+  const values=data.map(d=>d.weight);
+  const trendValues=linearRegression(data.map((d,i)=>({x:i,y:d.weight})));
+  document.getElementById('chartSubtitle').textContent=data.length
+    ?`${data.length} mesure${data.length>1?'s':''} · ${formatDate(data[0]?.date)} – ${formatDate(data[data.length-1]?.date)}`
+    :'Aucune donnée';
+  if(chart) chart.destroy();
+  chart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Poids',data:values,borderColor:'#C8FF00',
+        backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,180);g.addColorStop(0,'rgba(200,255,0,0.18)');g.addColorStop(1,'rgba(200,255,0,0)');return g},
+        borderWidth:2,pointBackgroundColor:'#C8FF00',pointRadius:data.length>20?0:4,pointHoverRadius:6,tension:0.3,fill:true,order:1
+      },{
+        label:'Tendance',data:trendValues,borderColor:'rgba(200,255,0,0.38)',borderWidth:1.5,
+        borderDash:[5,4],pointRadius:0,tension:0,fill:false,order:2
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#1E1E26',titleColor:'#7A7A8C',bodyColor:'#F0F0F5',borderColor:'rgba(200,255,0,0.3)',borderWidth:1,padding:10,
+          titleFont:{family:'Barlow',size:11,weight:'600'},bodyFont:{family:'Barlow Condensed',size:18,weight:'700'},
+          callbacks:{label:(c)=>c.dataset.label==='Poids'?` ${c.raw.toFixed(1)} kg`:` Tendance: ${c.raw.toFixed(1)} kg`}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)',drawBorder:false},ticks:{color:'#3A3A4A',font:{family:'Barlow',size:10,weight:'600'},maxRotation:0,autoSkip:true,maxTicksLimit:6},border:{display:false}},
+        y:{grid:{color:'rgba(255,255,255,0.04)',drawBorder:false},ticks:{color:'#7A7A8C',font:{family:'Barlow Condensed',size:12},callback:v=>v.toFixed(1),count:4},border:{display:false},
+          suggestedMin:values.length?Math.min(...values)-1:60,suggestedMax:values.length?Math.max(...values)+1:80}
+      }
+    }
+  });
+}
+
+// ── HISTORY ───────────────────────────────────────────
+function renderHistory() {
+  const sorted=[...weightData].sort((a,b)=>b.date.localeCompare(a.date));
+  const container=document.getElementById('historyList');
+  const liveChip=document.getElementById('liveChip');
+  liveChip.style.display=weightData.length?'inline-flex':'none';
+  if(!sorted.length){
+    container.innerHTML=`<div class="empty-state"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><p>Aucune pesée enregistrée.<br>Appuyez sur <strong style="color:var(--accent)">+</strong> pour commencer.</p></div>`;
+    return;
+  }
+  const weights=sorted.map(d=>d.weight);
+  const minW=Math.min(...weights),maxW=Math.max(...weights);
+  let html=`<div class="history-header"><span class="history-title">Toutes les pesées</span><span class="history-count">${sorted.length} entrée${sorted.length>1?'s':''}</span></div>`;
+  sorted.forEach((entry,i)=>{
+    const dt=parseDate(entry.date);
+    const dayNames=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const monthNames=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    const prev=sorted[i+1];
+    let deltaHtml='',deltaClass='eq';
+    if(prev){
+      const diff=entry.weight-prev.weight;
+      if(Math.abs(diff)>=0.05){deltaClass=diff>0?'up':'down';deltaHtml=`${diff>0?'▲':'▼'} ${Math.abs(diff).toFixed(1)}`}
+      else deltaHtml='= stable';
+    }
+    const range=maxW-minW||1;
+    const barPct=Math.round(((entry.weight-minW)/range)*100);
+    html+=`<div class="history-item" onclick="deleteEntry('${entry.date}')">
+      <div class="history-day"><div class="day-num">${dt.getDate()}</div><div class="day-label">${dayNames[dt.getDay()]}</div><div class="day-label">${monthNames[dt.getMonth()]}</div></div>
+      <div class="history-bar-wrap"><div class="history-bar-bg"><div class="history-bar-fill" style="width:${barPct}%"></div></div></div>
+      <div class="history-right"><div class="history-weight">${entry.weight.toFixed(1)}<span class="history-unit">kg</span></div>${deltaHtml?`<div class="history-delta ${deltaClass}">${deltaHtml}</div>`:''}</div>
+    </div>`;
+  });
+  container.innerHTML=html;
+}
+
+function deleteEntry(date) {
+  if(!confirm(`Supprimer la pesée du ${formatDate(date)} ?`)) return;
+  weightData=weightData.filter(d=>d.date!==date);
+  saveData(); refresh(); showToast('Pesée supprimée');
+}
+
+function refresh() { computeStats(); buildChart(currentFilter); renderHistory(); }
+
+function setFilter(f) {
+  currentFilter=f;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  const map={'3d':0,'1w':1,'1m':2,'1y':3};
+  document.querySelectorAll('.filter-pill')[map[f]].classList.add('active');
+  buildChart(f);
+}
+
+// ── SETUP PANEL ────────────────────────────────────────
+let setupOpen=false;
+function toggleSetup() {
+  setupOpen=!setupOpen;
+  document.getElementById('setupSteps').className='steps-list'+(setupOpen?' open':'');
+  document.getElementById('setupArrow').style.transform=setupOpen?'rotate(90deg)':'rotate(0deg)';
+}
+
+function copyWebhook(e) {
+  e.stopPropagation();
+  const url=document.getElementById('webhookUrl').textContent;
+  navigator.clipboard?.writeText(url).then(()=>showToast('URL copiée !')).catch(()=>{});
+}
+
+// ── ADD WEIGHT ────────────────────────────────────────
+function openAddModal() {
+  document.getElementById('dateInput').value=todayStr();
+  document.getElementById('weightInput').value='';
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(()=>document.getElementById('weightInput').focus(),350);
+}
+function closeAddModal(e) {
+  if(e.target===document.getElementById('addModal')) document.getElementById('addModal').classList.remove('open');
+}
+function saveWeight() {
+  const w=parseFloat(document.getElementById('weightInput').value);
+  const d=document.getElementById('dateInput').value;
+  if(!w||w<20||w>300){showToast('Poids invalide');return}
+  if(!d){showToast('Date requise');return}
+  const idx=weightData.findIndex(e=>e.date===d);
+  if(idx>=0) weightData[idx].weight=w; else weightData.push({date:d,weight:w});
+  saveData();
+  document.getElementById('addModal').classList.remove('open');
+  refresh(); showToast('Pesée enregistrée ✓');
+  lastPollHash=JSON.stringify(weightData);
+}
+
+// ── FILE IMPORT ────────────────────────────────────────
+function handleFileImport(e) {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const text=ev.target.result; let count=0;
+    if(file.name.endsWith('.xml')){
+      const parser=new DOMParser();
+      const xmlDoc=parser.parseFromString(text,'text/xml');
+      const records=xmlDoc.querySelectorAll('Record[type="HKQuantityTypeIdentifierBodyMass"]');
+      records.forEach(rec=>{
+        const val=parseFloat(rec.getAttribute('value'));
+        const rawDate=rec.getAttribute('startDate')||rec.getAttribute('creationDate');
+        if(!val||!rawDate) return;
+        const d=rawDate.substring(0,10);
+        if(val>=20&&val<=300&&!weightData.find(e=>e.date===d)){weightData.push({date:d,weight:val});count++}
+      });
+    } else if(file.name.endsWith('.csv')){
+      const lines=text.split('\n').filter(l=>l.trim());
+      lines.forEach(line=>{
+        const parts=line.split(/[,;]/).map(p=>p.trim());
+        if(parts.length<2) return;
+        let d='',w=0;
+        parts.forEach(p=>{
+          if(/^\d{4}-\d{2}-\d{2}/.test(p)) d=p.substring(0,10);
+          else if(/^\d{1,3}[.,]\d{1,2}$/.test(p)) w=parseFloat(p.replace(',','.'));
+          else if(/^\d{2}\/\d{2}\/\d{4}/.test(p)){const pts=p.split('/');d=`${pts[2]}-${pts[1]}-${pts[0]}`.substring(0,10)}
+        });
+        if(d&&w>=20&&w<=300&&!weightData.find(e=>e.date===d)){weightData.push({date:d,weight:w});count++}
+      });
+    }
+    if(count>0){saveData();refresh();showToast(`${count} pesée${count>1?'s':''} importée${count>1?'s':''} ✓`);lastPollHash=JSON.stringify(weightData)}
+    else showToast('Aucune donnée trouvée');
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ── DEMO DATA ─────────────────────────────────────────
+function loadDemoData() {
+  const demo=[]; let w=84.2;
+  const now=new Date();
+  for(let i=89;i>=0;i--){
+    const d=new Date(now); d.setDate(now.getDate()-i);
+    if(Math.random()<0.1) continue;
+    const change=(Math.random()-0.52)*0.4;
+    w=Math.max(70,Math.min(95,w+change));
+    const dateStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    demo.push({date:dateStr,weight:parseFloat(w.toFixed(1))});
+  }
+  weightData=demo; saveData(); refresh();
+  lastPollHash=JSON.stringify(weightData);
+  showToast('Données de démo chargées ✓');
+  setSyncState('live');
+  updateSyncBar(`Sync active · <strong>${demo.length} pesées</strong> chargées`);
+}
+
+// ── TIME ──────────────────────────────────────────────
+function updateTime(){
+  const n=new Date();
+  document.getElementById('currentTime').textContent=`${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}`;
+}
+updateTime(); setInterval(updateTime,10000);
+
+// ── KEYBOARD ──────────────────────────────────────────
+document.getElementById('weightInput').addEventListener('keydown',e=>{if(e.key==='Enter') saveWeight()});
+
+// ── INIT ──────────────────────────────────────────────
+lastPollHash=JSON.stringify(weightData);
+refresh();
+startPolling();
+updateSyncBar('Sync active · En attente de données Apple Santé');
+</script>
+</body>
+</html>
