@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chngr — Guide Raccourcis iOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0F;
+    --bg2: #111118;
+    --surface: #1E1E28;
+    --accent: #C8FF00;
+    --accent-dim: #C8FF0015;
+    --text: #F0F0F5;
+    --text2: #9898A8;
+    --text3: #55556A;
+    --border: #2A2A38;
+    --red: #FF4D6A;
+    --green: #00D68F;
+    --blue: #4D9EFF;
+    --orange: #FF9A3C;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* HEADER */
+  .doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+
+  .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.04em; margin-bottom: 16px; }
+  .logo span { color: var(--accent); }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .doc-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .doc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .tag-ios { background: #4D9EFF15; color: var(--blue); border: 1px solid #4D9EFF30; }
+  .tag-time { background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
+  .tag-level { background: #C8FF0015; color: var(--accent); border: 1px solid #C8FF0030; }
+
+  /* INTRO */
+  .intro-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 48px;
+  }
+
+  .intro-box p { color: var(--text2); font-size: 15px; line-height: 1.7; margin-bottom: 12px; }
+  .intro-box p:last-child { margin-bottom: 0; }
+  .intro-box strong { color: var(--text); font-weight: 500; }
+
+  /* SCHEMA */
+  .schema {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 48px;
+    overflow-x: auto;
+  }
+
+  .schema-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    min-width: max-content;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .flow-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .flow-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text2);
+    text-align: center;
+    max-width: 80px;
+    line-height: 1.3;
+  }
+
+  .flow-arrow {
+    font-size: 18px;
+    color: var(--text3);
+    margin: 0 12px;
+    margin-bottom: 28px;
+  }
+
+  .fi-health { background: #FF4D6A20; }
+  .fi-shortcut { background: #C8FF0020; }
+  .fi-web { background: #4D9EFF20; }
+  .fi-chngr { background: #FF9A3C20; }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 56px;
+  }
+
+  .section-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+
+  .section-desc {
+    color: var(--text2);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-left { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0A0A0F;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    margin-top: 8px;
+    min-height: 20px;
+  }
+
+  .step:last-child .step-line { display: none; }
+
+  .step-content { flex: 1; padding-top: 4px; }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .step-body {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .step-body:last-child { margin-bottom: 0; }
+
+  /* PHONE MOCKUP */
+  .phone-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .phone-screen {
+    background: #1C1C1E;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .phone-header {
+    font-size: 11px;
+    color: #8E8E93;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  .raccourcis-action {
+    background: #2C2C2E;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .action-icon.health { background: #FF2D5520; }
+  .action-icon.text { background: #30D15820; }
+  .action-icon.web { background: #0A84FF20; }
+  .action-icon.var { background: #FF9F0A20; }
+
+  .action-label {
+    font-size: 13px;
+    color: #EBEBF5;
+    font-weight: 500;
+  }
+
+  .action-sub {
+    font-size: 11px;
+    color: #8E8E93;
+    margin-top: 2px;
+  }
+
+  .action-arrow {
+    margin-left: auto;
+    color: #636366;
+    font-size: 12px;
+  }
+
+  /* CODE / URL blocks */
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    line-height: 1.8;
+    word-break: break-all;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .code-block .comment { color: var(--text3); font-style: italic; }
+  .code-block .key { color: var(--blue); }
+  .code-block .val { color: #FF9A3C; }
+
+  /* NOTE / WARNING */
+  .note {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .note-info { background: #4D9EFF10; border: 1px solid #4D9EFF25; color: #9EC8FF; }
+  .note-warn { background: #FF9A3C10; border: 1px solid #FF9A3C25; color: #FFB870; }
+  .note-success { background: #00D68F10; border: 1px solid #00D68F25; color: #50E8A8; }
+  .note-icon { flex-shrink: 0; font-size: 15px; }
+
+  /* AUTOMATION SECTION */
+  .automation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .auto-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .auto-card-icon { font-size: 28px; margin-bottom: 10px; }
+  .auto-card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .auto-card-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* URL ANATOMY */
+  .url-anatomy {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 2;
+  }
+
+  .url-part { display: inline; }
+  .u-base { color: var(--text2); }
+  .u-param { color: var(--accent); font-weight: 700; }
+  .u-token { color: var(--orange); }
+  .u-val { color: var(--green); }
+  .u-sep { color: var(--text3); }
+
+  .url-legend {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .url-legend-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .legend-key {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .lk-param { background: #C8FF0015; color: var(--accent); }
+  .lk-token { background: #FF9A3C15; color: var(--orange); }
+  .lk-val { background: #00D68F15; color: var(--green); }
+
+  .legend-desc { color: var(--text2); }
+
+  /* CHECKLIST */
+  .checklist { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border2, #333345);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check-text { font-size: 14px; color: var(--text2); line-height: 1.5; }
+  .check-text strong { color: var(--text); font-weight: 500; }
+
+  /* SEPARATOR */
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  /* FOOTER */
+  .doc-footer {
+    text-align: center;
+    color: var(--text3);
+    font-size: 12px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .doc-footer strong { color: var(--text2); }
+
+  @media (max-width: 600px) {
+    body { padding: 24px 16px 60px; }
+    h1 { font-size: 26px; }
+    .automation-grid { grid-template-columns: 1fr; }
+    .flow { gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="logo">Chn<span>gr</span></div>
+  <h1>Synchro automatique<br>Apple Santé → Chngr</h1>
+  <div class="doc-meta">
+    <span class="doc-tag tag-ios">📱 iOS 16+</span>
+    <span class="doc-tag tag-time">⏱ ~15 min de config</span>
+    <span class="doc-tag tag-level">✦ Aucun code requis</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="intro-box">
+  <p>Cette solution utilise l'app native <strong>Raccourcis</strong> (déjà installée sur ton iPhone) pour lire ton poids depuis <strong>Apple Santé</strong> et l'envoyer automatiquement à Chngr chaque matin.</p>
+  <p>Aucun serveur externe, aucune inscription, aucun abonnement. Tout passe par une URL sécurisée avec un token personnel que toi seul connais.</p>
+</div>
+
+<!-- SCHEMA -->
+<div class="schema">
+  <div class="schema-title">Schéma de fonctionnement</div>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-icon fi-health">❤️</div>
+      <div class="flow-label">Apple Santé</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon fi-shortcut">⚡</div>
+      <div class="flow-label">Raccourcis iOS</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon fi-web">🌐</div>
+      <div class="flow-label">URL Chngr + Token</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon fi-chngr">⚖️</div>
+      <div class="flow-label">Pesée enregistrée</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 1 ===== -->
+<div class="section">
+  <div class="section-num">Étape 1 sur 4</div>
+  <h2>Générer ton token dans Chngr</h2>
+  <p class="section-desc">Le token est une clé secrète qui identifie ton application. Sans lui, personne ne peut envoyer de données à ton Chngr.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Ouvrir le panneau de synchro dans Chngr</div>
+        <p class="step-body">Dans l'application Chngr, appuie sur la carte <strong>«&nbsp;Synchro Apple Santé&nbsp;»</strong> en haut de l'écran Pesées pour la déplier.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Appuyer sur le bouton Générer (icône ↺)</div>
+        <p class="step-body">Un token de 36 caractères apparaît en vert. Ce token est stocké uniquement sur ton téléphone dans le localStorage de Safari — il ne part nulle part.</p>
+        <div class="note note-warn">
+          <span class="note-icon">⚠️</span>
+          <span>Ne partage jamais ce token. Si tu vides le cache de Safari, regénère-en un nouveau et mets à jour ton raccourci.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Copier l'URL complète</div>
+        <p class="step-body">Appuie sur la zone URL pour la copier. Elle a cette forme — conserve-la, tu en auras besoin à l'étape 3.</p>
+        <div class="url-anatomy">
+          <span class="u-base">https://tonfichier.html</span><br>
+          <span class="u-sep">?</span><span class="u-param">sync</span><span class="u-sep">=</span><span class="u-val">1</span><br>
+          <span class="u-sep">&amp;</span><span class="u-param">token</span><span class="u-sep">=</span><span class="u-token">A1B2C3D4E5F6…</span><br>
+          <span class="u-sep">&amp;</span><span class="u-param">poids</span><span class="u-sep">=</span><span class="u-val">POIDS_KG</span><br>
+          <span class="u-sep">&amp;</span><span class="u-param">date</span><span class="u-sep">=</span><span class="u-val">DATE_ISO</span>
+        </div>
+        <div class="url-legend">
+          <div class="url-legend-item">
+            <span class="legend-key lk-param">poids=POIDS_KG</span>
+            <span class="legend-desc">Remplacé dynamiquement par Raccourcis avec la valeur réelle en kg</span>
+          </div>
+          <div class="url-legend-item">
+            <span class="legend-key lk-val">date=DATE_ISO</span>
+            <span class="legend-desc">Remplacé par la date/heure ISO 8601 de la pesée (ex: 2025-05-22T07:15:00)</span>
+          </div>
+          <div class="url-legend-item">
+            <span class="legend-key lk-token">token=A1B2C…</span>
+            <span class="legend-desc">Ton token personnel, vérifié par Chngr à chaque réception</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 2 ===== -->
+<div class="section">
+  <div class="section-num">Étape 2 sur 4</div>
+  <h2>Créer le Raccourci iOS</h2>
+  <p class="section-desc">On va créer un raccourci de 4 actions dans l'app Raccourcis. Cela prend environ 8 minutes.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Ouvrir l'app Raccourcis</div>
+        <p class="step-body">Elle est déjà installée sur tous les iPhone iOS 13+. Si tu ne la trouves pas, cherche «&nbsp;Raccourcis&nbsp;» dans Spotlight (balayage vers le bas sur l'écran d'accueil).</p>
+        <p class="step-body">Appuie sur le <strong>+</strong> en haut à droite pour créer un nouveau raccourci. Appuie sur <strong>«&nbsp;Ajouter une action&nbsp;»</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Action 1 — Lire le poids depuis Apple Santé</div>
+        <p class="step-body">Dans la barre de recherche des actions, tape <strong>«&nbsp;Santé&nbsp;»</strong>. Sélectionne <strong>«&nbsp;Trouver des échantillons de santé&nbsp;»</strong>.</p>
+        <div class="phone-wrap">
+          <div class="phone-screen">
+            <div class="phone-header">Action configurée</div>
+            <div class="raccourcis-action">
+              <div class="action-icon health">❤️</div>
+              <div>
+                <div class="action-label">Trouver des échantillons de santé</div>
+                <div class="action-sub">Type : Poids corporel · Trier par date (desc) · Limite : 1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="step-body">Configure l'action ainsi :</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Type :</strong> «&nbsp;Poids corporel&nbsp;» (cherche dans la liste)</div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Trier par :</strong> Date de début → <strong>Récent en premier</strong></div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Limite :</strong> <strong>1</strong> (on veut seulement la dernière pesée)</div></div>
+        </div>
+        <div class="note note-info">
+          <span class="note-icon">ℹ️</span>
+          <span>À la première exécution, iOS demandera l'autorisation d'accéder à Apple Santé. Autorise la lecture du poids corporel.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Action 2 — Extraire la valeur du poids</div>
+        <p class="step-body">Ajoute une nouvelle action. Cherche <strong>«&nbsp;Obtenir les détails de l'échantillon&nbsp;»</strong>. Configure :</p>
+        <div class="phone-wrap">
+          <div class="phone-screen">
+            <div class="phone-header">Action configurée</div>
+            <div class="raccourcis-action">
+              <div class="action-icon var">📊</div>
+              <div>
+                <div class="action-label">Obtenir les détails de l'échantillon</div>
+                <div class="action-sub">Valeur du résultat de «&nbsp;Trouver&nbsp;» · Stocker dans : Poids</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Détail :</strong> «&nbsp;Valeur&nbsp;» (la valeur numérique en kg)</div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text">Entrée : utilise la variable de l'action précédente (<em>résultat de «&nbsp;Trouver des échantillons&nbsp;»</em>)</div></div>
+        </div>
+        <div class="note note-info">
+          <span class="note-icon">ℹ️</span>
+          <span>Si ton iPhone enregistre le poids en <strong>livres (lb)</strong>, ajoute une action «&nbsp;Calculer&nbsp;» : <em>Résultat × 0.453592</em> pour convertir en kg avant l'étape suivante.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Action 3 — Extraire la date de la pesée</div>
+        <p class="step-body">Ajoute une autre action <strong>«&nbsp;Obtenir les détails de l'échantillon&nbsp;»</strong>. Cette fois, extrait la <strong>date</strong> :</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Détail :</strong> «&nbsp;Date de début&nbsp;»</div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text">Entrée : même résultat de «&nbsp;Trouver des échantillons&nbsp;»</div></div>
+        </div>
+        <p class="step-body" style="margin-top:12px">Puis ajoute <strong>«&nbsp;Formater la date&nbsp;»</strong> :</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Format :</strong> Personnalisé → <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">yyyy-MM-dd'T'HH:mm:ss</code></div></div>
+        </div>
+        <div class="note note-warn">
+          <span class="note-icon">⚠️</span>
+          <span>Le format ISO 8601 est obligatoire pour que Chngr interprète correctement la date. Ne change pas ce format.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Action 4 — Ouvrir l'URL Chngr avec les données</div>
+        <p class="step-body">Ajoute l'action <strong>«&nbsp;Ouvrir des URL&nbsp;»</strong> (cherche «&nbsp;URL&nbsp;» dans les actions). Dans le champ URL, construis l'adresse dynamique :</p>
+
+        <div class="phone-wrap">
+          <div class="phone-screen">
+            <div class="phone-header">Construction de l'URL</div>
+            <div class="raccourcis-action">
+              <div class="action-icon web">🌐</div>
+              <div style="flex:1">
+                <div class="action-label">Ouvrir des URL</div>
+                <div class="action-sub" style="margin-top:6px;line-height:1.6;font-size:11px">
+                  https://[ton-url-chngr]?sync=1&token=[TON_TOKEN]&poids=<strong style="color:#30D158">[Valeur de l'échantillon]</strong>&date=<strong style="color:#FF9F0A">[Date formatée]</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="step-body">Pour insérer les variables dynamiques dans le champ URL :</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text">Tape le début de l'URL jusqu'à <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">&poids=</code></div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text">Appuie sur l'icône <strong>variable</strong> (curseur ou accolades) → choisis <strong>«&nbsp;Valeur de l'échantillon&nbsp;»</strong> de l'action 2</div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text">Continue : <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">&date=</code> puis insère la variable <strong>«&nbsp;Date formatée&nbsp;»</strong> de l'action 3</div></div>
+        </div>
+
+        <div class="note note-success">
+          <span class="note-icon">✓</span>
+          <span>Colle d'abord l'URL copiée depuis Chngr (qui contient déjà ton token), puis remplace <code>POIDS_KG</code> et <code>DATE_ISO</code> par les variables dynamiques.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">6</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Nommer et sauvegarder le raccourci</div>
+        <p class="step-body">Appuie sur le <strong>✕</strong> ou sur «&nbsp;Terminé&nbsp;». Donne un nom clair au raccourci, par exemple <strong>«&nbsp;Chngr — Sync Poids&nbsp;»</strong>. Tu peux aussi lui attribuer l'icône d'une balance ⚖️.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 3 ===== -->
+<div class="section">
+  <div class="section-num">Étape 3 sur 4</div>
+  <h2>Tester le raccourci manuellement</h2>
+  <p class="section-desc">Avant d'automatiser, vérifie que tout fonctionne correctement.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Lancer le raccourci</div>
+        <p class="step-body">Dans l'app Raccourcis, appuie sur ton raccourci <strong>«&nbsp;Chngr — Sync Poids&nbsp;»</strong>. iOS va demander l'autorisation d'accéder aux données de santé — <strong>Autoriser la lecture du poids corporel</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Safari ouvre Chngr automatiquement</div>
+        <p class="step-body">Le raccourci ouvre Chngr dans Safari avec l'URL construite. Chngr détecte les paramètres, vérifie le token, et enregistre la pesée en 1 seconde. Un toast de confirmation apparaît : <strong>«&nbsp;Synchro Apple Santé : 82.5 kg 🍎&nbsp;»</strong>.</p>
+        <div class="note note-warn">
+          <span class="note-icon">⚠️</span>
+          <span>Si le message «&nbsp;Token invalide — synchro refusée&nbsp;» apparaît, vérifie que le token dans l'URL correspond bien à celui affiché dans Chngr. Recopie l'URL depuis Chngr.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Vérifier dans l'historique Chngr</div>
+        <p class="step-body">La nouvelle pesée apparaît dans l'historique avec le tag «&nbsp;Apple Santé&nbsp;». La date et heure correspondent à celle enregistrée dans Apple Santé (pas l'heure du raccourci).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ÉTAPE 4 ===== -->
+<div class="section">
+  <div class="section-num">Étape 4 sur 4</div>
+  <h2>Automatiser l'exécution chaque matin</h2>
+  <p class="section-desc">Maintenant on configure une automatisation iOS pour que le raccourci se déclenche automatiquement, sans aucune action de ta part.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Aller dans l'onglet Automatisations</div>
+        <p class="step-body">Dans l'app Raccourcis, appuie sur <strong>«&nbsp;Automatisation&nbsp;»</strong> (icône horloge en bas). Puis <strong>«&nbsp;Nouvelle automatisation&nbsp;»</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Choisir le déclencheur «&nbsp;Heure du jour&nbsp;»</div>
+        <p class="step-body">Sélectionne <strong>«&nbsp;Heure du jour&nbsp;»</strong>. Configure :</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Heure :</strong> 8h00 (ou l'heure à laquelle tu te pèses habituellement)</div></div>
+          <div class="check-item"><div class="check-box"></div><div class="check-text"><strong>Répéter :</strong> Tous les jours</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Ajouter l'action «&nbsp;Exécuter le raccourci&nbsp;»</div>
+        <p class="step-body">Appuie sur «&nbsp;Suivant&nbsp;» → «&nbsp;Ajouter une action&nbsp;» → cherche <strong>«&nbsp;Exécuter le raccourci&nbsp;»</strong>. Sélectionne ton raccourci <strong>«&nbsp;Chngr — Sync Poids&nbsp;»</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Désactiver «&nbsp;Demander avant d'exécuter&nbsp;»</div>
+        <p class="step-body">C'est l'étape clé pour une vraie automatisation. Appuie sur <strong>«&nbsp;Suivant&nbsp;»</strong> puis désactive le bouton <strong>«&nbsp;Demander avant d'exécuter&nbsp;»</strong>.</p>
+        <div class="note note-warn">
+          <span class="note-icon">⚠️</span>
+          <span>iOS affichera un avertissement indiquant que l'automatisation s'exécutera sans confirmation. C'est normal et nécessaire — appuie sur <strong>«&nbsp;Ne plus demander&nbsp;»</strong>.</span>
+        </div>
+        <div class="note note-info">
+          <span class="note-icon">ℹ️</span>
+          <span>Avec cette option désactivée, ton iPhone exécutera le raccourci à 8h00 tous les jours et ouvrira Chngr en arrière-plan — même sans notification.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Sauvegarder l'automatisation</div>
+        <p class="step-body">Appuie sur <strong>«&nbsp;Terminé&nbsp;»</strong>. L'automatisation est active. Dès demain matin à 8h00 (ou l'heure choisie), Chngr recevra automatiquement ta pesée depuis Apple Santé.</p>
+        <div class="note note-success">
+          <span class="note-icon">🎉</span>
+          <span>C'est en place ! Tu peux aussi déclencher la synchro à tout moment en exécutant le raccourci manuellement depuis l'app Raccourcis ou depuis le widget Raccourcis sur ton écran d'accueil.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ALTERNATIVES -->
+<div class="section">
+  <h2>Déclencheurs alternatifs</h2>
+  <p class="section-desc">En plus de l'heure fixe, tu peux utiliser d'autres déclencheurs selon ton organisation.</p>
+
+  <div class="automation-grid">
+    <div class="auto-card">
+      <div class="auto-card-icon">📶</div>
+      <div class="auto-card-title">À la connexion WiFi</div>
+      <p class="auto-card-text">Déclenche la synchro quand tu te connectes au WiFi de chez toi le matin. Idéal si tu te pèses après le réveil.</p>
+    </div>
+    <div class="auto-card">
+      <div class="auto-card-icon">⏰</div>
+      <div class="auto-card-title">Alarme désactivée</div>
+      <p class="auto-card-text">Se déclenche quand tu coupes ton alarme le matin. Nécessite iOS 16+.</p>
+    </div>
+    <div class="auto-card">
+      <div class="auto-card-icon">🏠</div>
+      <div class="auto-card-title">Arrivée à domicile</div>
+      <p class="auto-card-text">Utile si tu te pèses le soir en rentrant. Utilise la géolocalisation de ton domicile.</p>
+    </div>
+    <div class="auto-card">
+      <div class="auto-card-icon">🔋</div>
+      <div class="auto-card-title">Branchement chargeur</div>
+      <p class="auto-card-text">Si tu branches ton iPhone sur son chargeur nocturne avant de te coucher, tu peux synchroniser la pesée du soir.</p>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- CHECKLIST FINALE -->
+<div class="section">
+  <h2>Checklist de configuration</h2>
+  <p class="section-desc">Vérifie que tout est en place avant de considérer la configuration terminée.</p>
+
+  <div class="checklist">
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Token généré dans Chngr et affiché en vert</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">URL copiée et collée dans le champ «&nbsp;Ouvrir des URL&nbsp;» du raccourci</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Variables dynamiques <strong>Poids</strong> et <strong>Date formatée</strong> insérées dans l'URL</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Test manuel réussi — toast de confirmation affiché dans Chngr</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Pesée visible dans l'historique Chngr avec le tag «&nbsp;Apple Santé&nbsp;»</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Automatisation créée avec l'heure du matin</div></div>
+    <div class="check-item"><div class="check-box"></div><div class="check-text">Option «&nbsp;Demander avant d'exécuter&nbsp;» désactivée</div></div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  <p><strong>Chngr</strong> — Métamorphose ton physique</p>
+  <p style="margin-top:6px">Guide de configuration Raccourcis iOS · Version 1.0</p>
+</div>
+
+</body>
+</html>
